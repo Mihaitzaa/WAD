@@ -1,0 +1,197 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="col-md-4">
+    <div class=" card bg-primary text-center card-form card-body">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h4>Register</h4>
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control form-control-lg" placeholder="First Name" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                <div id="error-firstname" >Please type your first name(min. 4 char)</div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control form-control-lg" placeholder="Last Name" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                <div id="error-lastname" class="shadow">Please type in your last name(min. 4 char)</div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Username"></label>
+                <input asp-for="Input.Username" class="form-control form-control-lg" placeholder="Username" />
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+                <div id="error-username" class="shadow">Please type a valid username (min. 4 char)</div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control form-control-lg" placeholder="Email" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                <div id="error-email">Please type a valid email </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control form-control-lg" placeholder="Password" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                <div id="error-password">Please type a valid password </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control form-control-lg" placeholder="Confirm Password" />
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                <div id="error-passwordType">Password doesn't match</div>
+            </div>
+            <button type="submit" class="btn btn-outline-light btn-block">Register</button>
+        </form>
+    </div>
+    @* <div class="col-md-6 col-md-offset-2">
+            <section>
+                <h4>Use another service to register.</h4>
+                <hr />
+                @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
+                        <div>
+                            <p>
+                                There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
+                                for details on setting up this ASP.NET application to support logging in via external services.
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                            <div>
+                                <p>
+                                    @foreach (var provider in Model.ExternalLogins)
+                                    {
+                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    }
+                                </p>
+                            </div>
+                        </form>
+                    }
+                }
+            </section>
+        </div> *@
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    #error-loginName, #error-password, #error-firstname, #error-lastname, #error-passwordType, #error-email {
+        font-size: 15px;
+        color: #C62828;
+        background: rgba(255,0,0,0.1);
+        text-align: center;
+        padding-bottom: 3px;
+        display: none;
+    }
+</style>
+
+<script type="text/javascript">
+    var firstname = document.getElementsByClassName('firstname')[0];
+    var lastname = document.getElementsByClassName('lastname')[0];
+    var userName = document.getElementsByClassName('username')[0];
+    var passwordC = document.getElementsByClassName('password')[0];
+    var confirmpassword = document.getElementsByClassName('passwordType')[0];
+
+    var firstname_error = document.getElementById('error-firstname');
+    var lastname_error = document.getElementById('error-lastname');
+    var userName = document.getElementById('error-username');
+    var password_error = document.getElementById('error-password');
+    var passwordType_error = document.getElementById('error-passwordType');
+
+    function validated() {
+        var pattern = new RegExp("^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]))|((?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])))(?=.{6,})");
+
+        if (firstname.value.length < 4) {
+            firstname_error.style.display = "block";
+            return false;
+
+        }
+
+        if (lastname.value.length < 4) {
+            lastname_error.style.display = "block";
+            return false;
+
+        }
+
+        if (userName.value.length < 4) {
+            userName.style.display = "block";
+            return false;
+
+        }
+
+        if (!pattern.test(passwordC.value)) {
+            password_error.style.display = "block";
+            return false;
+        }
+
+        if (confirmpassword.value !== passwordC.value) {
+            passwordType_error.style.display = "block";
+            return false;
+        }
+
+        return true;
+    }
+
+    function username_verify() {
+        if (userName.value.length >= 4) {
+            userName.style.display = "none";
+            return true;
+        }
+        return false;
+    }
+
+    function firstname_verify() {
+        if (firstname.value.length >= 4) {
+            firstname_error.style.display = "none";
+            return true;
+        }
+        return false;
+    }
+
+    function lastname_verify() {
+        if (lastname.value.length >= 4) {
+            lastname_error.style.display = "none";
+            return true;
+        }
+        return false;
+    }
+
+    function password_verify() {
+        var pattern = new RegExp("^(((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9])(?=.*[A-Z]))|((?=.*[A-Z])(?=.*[0-9])(?=.*[a-z])))(?=.{6,})");
+
+        if (pattern.test(passwordC.value)) {
+            password_error.style.display = "none";
+            return true;
+
+        return false;
+    }
+
+
+    function passwordMatch_verify() {
+        if (passwordC.value === confirmpassword.value) {
+            passwordType_error.style.display = "none";
+            return true;
+        }
+        return false;
+    }
+
+    firstname.addEventListener('textInput', firstname_verify);
+    lastname.addEventListener('textInput', lastname_verify);
+    loginName.addEventListener('textInput', username_verify);
+    passwordC.addEventListener('textInput', password_verify);
+    confirmpassword.addEventListener('textInput', passwordMatch_verify);
+
+</script>
